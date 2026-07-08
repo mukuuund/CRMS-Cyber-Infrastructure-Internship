@@ -1,18 +1,44 @@
+# Environments
+.env
+.env.*
+.venv/
+venv/
+env/
+
+# Python caches
 __pycache__/
-*.py[cod]
-*$py.class
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+
+# Logs
 *.log
+logs/
+
+# Databases
 *.db
+*.sqlite
 *.sqlite3
-.env
-.venv/
+test.db
+dev.db
+database.db
+app.db
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Custom project rules for demo datasets and exports
 Data/
 scratch/
 reports/
 models/ml/
 scripts/eda_*.py
 scripts/train_*.py
-.DS_Store
