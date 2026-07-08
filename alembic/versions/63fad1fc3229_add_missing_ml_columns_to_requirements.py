@@ -17,12 +17,21 @@ down_revision: Union[str, None] = 'f6ad57c37b94'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
+from sqlalchemy.engine.reflection import Inspector
 
 def upgrade() -> None:
-    op.add_column('requirements', sa.Column('ai_low_probability', sa.Float(), nullable=True))
-    op.add_column('requirements', sa.Column('ai_medium_probability', sa.Float(), nullable=True))
-    op.add_column('requirements', sa.Column('ai_high_probability', sa.Float(), nullable=True))
-    op.add_column('requirements', sa.Column('effort_overridden', sa.Boolean(), server_default=sa.text('false'), nullable=False))
+    conn = op.get_bind()
+    inspector = Inspector.from_engine(conn)
+    columns = [col['name'] for col in inspector.get_columns('requirements')]
+    
+    if 'ai_low_probability' not in columns:
+        op.add_column('requirements', sa.Column('ai_low_probability', sa.Float(), nullable=True))
+    if 'ai_medium_probability' not in columns:
+        op.add_column('requirements', sa.Column('ai_medium_probability', sa.Float(), nullable=True))
+    if 'ai_high_probability' not in columns:
+        op.add_column('requirements', sa.Column('ai_high_probability', sa.Float(), nullable=True))
+    if 'effort_overridden' not in columns:
+        op.add_column('requirements', sa.Column('effort_overridden', sa.Boolean(), server_default=sa.text('false'), nullable=False))
 
 
 def downgrade() -> None:
