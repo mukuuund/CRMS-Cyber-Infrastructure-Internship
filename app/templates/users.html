@@ -24,15 +24,15 @@
                 <td>{{ user.full_name }}</td>
                 <td>{{ user.email }}</td>
                 <td>
-                    <span class="badge {% if user.role.value == 'admin' %}badge-active{% endif %}">
-                        {{ user.role.value | capitalize }}
+                    <span class="badge {% if get_val(user.role) == 'admin' %}badge-active{% endif %}">
+                        {{ get_val(user.role) | capitalize }}
                     </span>
                 </td>
                 <td>
                     <form action="/ui/users/{{ user.id }}/role" method="post" style="display: flex; gap: 0.5rem; margin: 0;">
                         <select name="role" required style="padding: 0.25rem;">
                             {% for role in UserRole %}
-                            <option value="{{ role.value }}" {% if role.value == user.role.value %}selected{% endif %}>
+                            <option value="{{ role.value }}" {% if role.value == get_val(user.role) %}selected{% endif %}>
                                 {{ role.value | capitalize }}
                             </option>
                             {% endfor %}

@@ -12,11 +12,11 @@
         description" }}</p>
 
     <div style="display: flex; gap: 0.5rem; align-items: center;">
-        {% set prio = requirement.priority.value if requirement.priority and requirement.priority.value is defined else
+        {% set prio = get_val(requirement.priority) if requirement.priority and get_val(requirement.priority) is defined else
         requirement.priority %}
         <span class="badge badge-priority-{{ prio | lower }}">{{ prio | title }} Priority</span>
 
-        <span class="badge badge-status-{{ requirement.status.value }}">{{ requirement.status.value | replace('_', ' ')
+        <span class="badge badge-status-{{ get_val(requirement.status) }}">{{ get_val(requirement.status) | replace('_', ' ')
             | title }}</span>
 
         {% if requirement.module %}<span class="badge badge-role-admin">{{ requirement.module }} Module</span>{% endif
@@ -87,10 +87,10 @@
                 <div><strong>Reviewed At:</strong> {{ requirement.reviewed_at.strftime('%Y-%m-%d %H:%M') if
                     requirement.reviewed_at else "N/A" }}</div>
             </div>
-            {% if requirement.status.value == 'rejected' and requirement.rejection_reason %}
+            {% if get_val(requirement.status) == 'rejected' and requirement.rejection_reason %}
             <div style="margin-top: 0.75rem; font-size: 0.875rem;"><strong style="color: var(--danger-color);">Rejection
                     Reason:</strong> {{ requirement.rejection_reason }}</div>
-            {% elif requirement.status.value == 'changes_requested' and requirement.rejection_reason %}
+            {% elif get_val(requirement.status) == 'changes_requested' and requirement.rejection_reason %}
             <div style="margin-top: 0.75rem; font-size: 0.875rem;"><strong style="color: #b45309;">Changes
                     Requested:</strong> {{ requirement.rejection_reason }}</div>
             {% endif %}
@@ -122,8 +122,8 @@
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                     <div><strong>Model Used:</strong> V3 TextCNN + BiGRU</div>
-                    <div><strong>Human Final Priority:</strong> {{ requirement.priority.value | title if
-                        requirement.priority and requirement.priority.value is defined else requirement.priority |
+                    <div><strong>Human Final Priority:</strong> {{ get_val(requirement.priority) | title if
+                        requirement.priority and get_val(requirement.priority) is defined else requirement.priority |
                         string | title }}</div>
                     <div><strong>Overridden:</strong> {% if requirement.priority_overridden %}<span style="color: #b91c1c; font-weight: bold;">Yes</span>{% else %}<span>No</span>{% endif %}</div>
                 </div>
@@ -189,7 +189,7 @@
                         <div
                             style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
                             {% if u %}
-                                        <span class="badge badge-role-{{ u.role.value | lower }}" style="padding: 0.1rem 0.5rem;">{{ u.role.value | replace('_', ' ') | title }}</span>
+                                        <span class="badge badge-role-{{ get_val(u.role) | lower }}" style="padding: 0.1rem 0.5rem;">{{ get_val(u.role) | replace('_', ' ') | title }}</span>
                                     {% else %}
                                         <span class="badge badge-role-system" style="padding: 0.1rem 0.5rem;">System</span>
                                     {% endif %}
@@ -213,7 +213,7 @@
     <div style="display: flex; flex-direction: column; gap: 1rem;">
 
         <!-- Review Action (only visible if pending review) -->
-        {% if is_project_editable and can_approve and requirement.status.value == 'submitted' %}
+        {% if is_project_editable and can_approve and get_val(requirement.status) == 'submitted' %}
         <div class="card" style="border: 1px solid #bfdbfe; background-color: #eff6ff;">
             <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #1e40af;">Review Requirement
             </h3>
@@ -291,7 +291,7 @@
                 <div>
                     <div
                         style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
-                        <span class="badge badge-role-{{ u.role.value | lower }}" style="padding: 0.1rem 0.5rem;">{{ u.role.value | replace('_', ' ') | title }}</span>
+                        <span class="badge badge-role-{{ get_val(u.role) | lower }}" style="padding: 0.1rem 0.5rem;">{{ get_val(u.role) | replace('_', ' ') | title }}</span>
                         <span>• {{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
                     </div>
                     <p style="font-size: 0.875rem; color: #1e293b; margin: 0;">{{ comment.content }}</p>

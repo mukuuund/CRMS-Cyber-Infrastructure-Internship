@@ -18,14 +18,14 @@
                 <div class="avatar">{{ current_user.full_name[:2] | upper }}</div>
                 <div class="user-name">{{ current_user.full_name }}</div>
                 <div class="user-email">{{ current_user.email }}</div>
-                <div class="user-role">Global Role: {{ current_user.role.value | capitalize }}</div>
+                <div class="user-role">Global Role: {{ get_val(current_user.role) | capitalize }}</div>
             </div>
             {% endif %}
 
             <nav class="nav-links">
                 <a href="/ui/dashboard">Dashboard</a>
                 <a href="/ui/projects">Projects</a>
-                {% if current_user and current_user.role.value == 'admin' %}
+                {% if current_user and get_val(current_user.role) == 'admin' %}
                 <a href="/ui/users">Users</a>
                 {% endif %}
             </nav>

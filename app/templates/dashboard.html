@@ -56,7 +56,7 @@
                 <tr>
                     <td>{{ proj.project_code }}</td>
                     <td>{{ proj.name }}</td>
-                    <td><span class="badge badge-status-{{ proj.status.value }}">{{ proj.status.value | title }}</span></td>
+                    <td><span class="badge badge-status-{{ get_val(proj.status) }}">{{ get_val(proj.status) | title }}</span></td>
                     <td><a href="/ui/projects/{{ proj.id }}" class="btn">View</a></td>
                 </tr>
                 {% endfor %}

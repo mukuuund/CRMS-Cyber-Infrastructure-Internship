@@ -17,7 +17,7 @@
                         <a href="/ui/projects/{{ project.id }}">{{ project.project_code }}: {{ project.name }}</a>
                     </div>
                     <p style="color: var(--text-muted); margin-bottom: 1rem;">{{ project.description or "No description" }}</p>
-                    <span class="badge badge-active">{{ project.status.value }}</span>
+                    <span class="badge badge-active">{{ get_val(project.status) }}</span>
                 </div>
             {% endfor %}
             </div>

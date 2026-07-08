@@ -5,15 +5,15 @@
 {% block content %}
 {% set ns = namespace(submitted=0, approved=0, changes_requested=0) %}
 {% for req in requirements %}
-    {% if req.status.value == 'submitted' %}{% set ns.submitted = ns.submitted + 1 %}{% endif %}
-    {% if req.status.value == 'approved' %}{% set ns.approved = ns.approved + 1 %}{% endif %}
-    {% if req.status.value == 'changes_requested' %}{% set ns.changes_requested = ns.changes_requested + 1 %}{% endif %}
+    {% if get_val(req.status) == 'submitted' %}{% set ns.submitted = ns.submitted + 1 %}{% endif %}
+    {% if get_val(req.status) == 'approved' %}{% set ns.approved = ns.approved + 1 %}{% endif %}
+    {% if get_val(req.status) == 'changes_requested' %}{% set ns.changes_requested = ns.changes_requested + 1 %}{% endif %}
 {% endfor %}
 
 {% set current_user_role = 'Viewer' %}
 {% for part, u in participants %}
     {% if u.id == current_user.id %}
-        {% set current_user_role = part.role.value %}
+        {% set current_user_role = get_val(part.role) %}
     {% endif %}
 {% endfor %}
 
@@ -23,12 +23,12 @@
             <h2 class="project-header-title" style="margin-bottom: 0; font-weight: 700;">{{ project.project_code }}: {{ project.name }}</h2>
         </div>
         <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
-            <span class="badge badge-status-{{ project.status.value }}">{{ project.status.value | replace('_', ' ') | title }}</span>
+            <span class="badge badge-status-{{ get_val(project.status) }}">{{ get_val(project.status) | replace('_', ' ') | title }}</span>
             <span class="badge badge-role-{{ current_user_role | lower }}">Role: {{ current_user_role | title }}</span>
             
             {% if can_close %}
             <form action="/ui/projects/{{ project.id }}/status" method="post" style="display: inline-flex; gap: 0.5rem;">
-                {% if project.status.value == ProjectStatus.active.value %}
+                {% if get_val(project.status) == "active" %}
                     <input type="hidden" name="status" value="completed">
                     <button type="submit" class="btn btn-sm">Mark Completed</button>
                     <button type="submit" formaction="/ui/projects/{{ project.id }}/status" name="status" value="closed" class="btn btn-sm">Close Project</button>
@@ -85,17 +85,17 @@
                             <td><a href="/ui/requirements/{{ req.id }}" class="modern-link">{{ req.title }}</a></td>
                             <td>{{ req.module or "-" }}</td>
                             <td>
-                                {% set prio = req.priority.value if req.priority and req.priority.value is defined else req.priority %}
+                                {% set prio = get_val(req.priority) %}
                                 <span class="badge badge-priority-{{ prio | lower }}">{{ prio | title }}</span>
                             </td>
                             <td>
-                                <span class="badge badge-status-{{ req.status.value }}">{{ req.status.value | replace('_', ' ') | title }}</span>
+                                <span class="badge badge-status-{{ get_val(req.status) }}">{{ get_val(req.status) | replace('_', ' ') | title }}</span>
                             </td>
                             <td>
                                 {% if req.reviewed_by_id %}
                                     <div class="review-info">
                                         <span>By {{ reviewer_dict.get(req.id, 'Unknown') }}</span>
-                                        {% if req.status.value == 'rejected' and req.rejection_reason %}
+                                        {% if get_val(req.status) == 'rejected' and req.rejection_reason %}
                                             <span class="review-reason">Reason: {{ req.rejection_reason }}</span>
                                         {% endif %}
                                     </div>
@@ -105,7 +105,7 @@
                             </td>
                             <td>
                                 <div style="display: flex; gap: 0.25rem; align-items: flex-start;">
-                                    {% if is_project_editable and can_approve and req.status.value == RequirementStatus.submitted.value %}
+                                    {% if is_project_editable and can_approve and get_val(req.status) == "submitted" %}
                                     <form action="/ui/requirements/{{ req.id }}/review" method="post" style="display: flex; flex-direction: column; gap: 0.25rem;">
                                         <div style="display: flex; gap: 0.25rem;">
                                             <button type="submit" name="action" value="approved" class="btn btn-sm" style="background-color: var(--primary-color); color: white;">Approve</button>
@@ -288,10 +288,10 @@
                         <tr>
                             <td>{{ cr.title }}</td>
                             <td>{% if cr.requirement_id %}<a href="/ui/requirements/{{ cr.requirement_id }}" class="modern-link">Req #{{ cr.requirement_id }}</a>{% else %}-{% endif %}</td>
-                            <td><span class="badge badge-status-{{ cr.status.value }}">{{ cr.status.value | replace('_', ' ') | title }}</span></td>
+                            <td><span class="badge badge-status-{{ get_val(cr.status) }}">{{ get_val(cr.status) | replace('_', ' ') | title }}</span></td>
                             <td>
                                 <div style="display: flex; gap: 0.25rem; align-items: flex-start;">
-                                    {% if is_project_editable and can_approve and cr.status.value == 'submitted' %}
+                                    {% if is_project_editable and can_approve and get_val(cr.status) == 'submitted' %}
                                     <form action="/ui/change-requests/{{ cr.id }}/review" method="post" style="display: flex; flex-direction: column; gap: 0.25rem;">
                                         <div style="display: flex; gap: 0.25rem;">
                                             <button type="submit" name="action" value="approved" class="btn btn-sm" style="background-color: var(--primary-color); color: white;">Approve</button>
@@ -323,7 +323,7 @@
                             <div style="flex: 1; display: flex; flex-direction: column;">
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <strong style="color: var(--text-main); font-size: 0.875rem;">{{ u.full_name }}</strong>
-                                    <span class="badge badge-role-{{ part.role.value | lower }}">{{ part.role.value | title }}</span>
+                                    <span class="badge badge-role-{{ get_val(part.role) | lower }}">{{ get_val(part.role) | title }}</span>
                                 </div>
                                 <span style="font-size: 0.75rem; color: var(--text-muted);">{{ u.email }}</span>
                             </div>
