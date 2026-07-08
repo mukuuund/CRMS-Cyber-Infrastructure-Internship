@@ -1,0 +1,21 @@
+[
+    "summary_char_len",
+    "description_char_len",
+    "summary_word_count",
+    "description_word_count",
+    "contains_error",
+    "contains_exception",
+    "contains_crash",
+    "contains_failure",
+    "contains_security",
+    "contains_data_loss",
+    "contains_cannot",
+    "contains_unable",
+    "contains_timeout",
+    "contains_memory",
+    "contains_production",
+    "contains_login",
+    "contains_server",
+    "contains_build",
+    "contains_compile"
+]

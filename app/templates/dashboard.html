@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - CRMS{% endblock %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+<!-- Section A: Summary Cards -->
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin-bottom: 2rem; gap: 1rem;">
+    <div class="card" style="margin-bottom: 0;">
+        <h3 style="font-size: 0.9rem; color: var(--text-muted);">Total Projects</h3>
+        <p style="font-size: 1.8rem; font-weight: bold; color: var(--primary-color);">{{ total_projects }}</p>
+    </div>
+    <div class="card" style="margin-bottom: 0;">
+        <h3 style="font-size: 0.9rem; color: var(--text-muted);">Total Reqs</h3>
+        <p style="font-size: 1.8rem; font-weight: bold; color: var(--primary-color);">{{ total_reqs }}</p>
+    </div>
+    <div class="card" style="margin-bottom: 0;">
+        <h3 style="font-size: 0.9rem; color: var(--text-muted);">Submitted</h3>
+        <p style="font-size: 1.8rem; font-weight: bold; color: #17a2b8;">{{ submitted_reqs }}</p>
+    </div>
+    <div class="card" style="margin-bottom: 0;">
+        <h3 style="font-size: 0.9rem; color: var(--text-muted);">Approved</h3>
+        <p style="font-size: 1.8rem; font-weight: bold; color: #28a745;">{{ approved_reqs }}</p>
+    </div>
+    <div class="card" style="margin-bottom: 0;">
+        <h3 style="font-size: 0.9rem; color: var(--text-muted);">Changes Req</h3>
+        <p style="font-size: 1.8rem; font-weight: bold; color: #ffc107;">{{ changes_requested_reqs }}</p>
+    </div>
+    <div class="card" style="margin-bottom: 0;">
+        <h3 style="font-size: 0.9rem; color: var(--text-muted);">High Priority</h3>
+        <p style="font-size: 1.8rem; font-weight: bold; color: var(--danger-color);">{{ high_priority_reqs }}</p>
+    </div>
+    <div class="card" style="margin-bottom: 0;">
+        <h3 style="font-size: 0.9rem; color: var(--text-muted);">AI Overrides</h3>
+        <p style="font-size: 1.8rem; font-weight: bold; color: #6f42c1;">{{ ai_overrides }}</p>
+    </div>
+</div>
+
+<div class="grid">
+    <!-- Section B: Latest Projects -->
+    <div class="card" style="grid-column: span 2;">
+        <h3>Latest Projects</h3>
+        {% if latest_projects %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for proj in latest_projects %}
+                <tr>
+                    <td>{{ proj.project_code }}</td>
+                    <td>{{ proj.name }}</td>
+                    <td><span class="badge badge-status-{{ proj.status.value }}">{{ proj.status.value | title }}</span></td>
+                    <td><a href="/ui/projects/{{ proj.id }}" class="btn">View</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="color: var(--text-muted);">No projects found.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="grid">
+    <!-- Section C: User Actions -->
+    <div class="card">
+        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; color: #1e293b;">My Recent Activity</h3>
+        {% if recent_actions %}
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; position: relative;">
+            <div style="position: absolute; left: 7px; top: 8px; bottom: 8px; width: 2px; background-color: #e2e8f0; z-index: 0;"></div>
+            {% for action in recent_actions %}
+            <div style="display: flex; gap: 1rem; position: relative; z-index: 1;">
+                <div style="width: 16px; height: 16px; border-radius: 50%; background-color: #bfdbfe; margin-top: 2px; border: 2px solid white; flex-shrink: 0;"></div>
+                <div style="flex-grow: 1;">
+                    <a href="{{ action.link }}" style="font-weight: 600; font-size: 0.875rem; color: #1e3a8a; text-decoration: none; line-height: 1.4; display: block; margin-bottom: 0.25rem;">{{ action.text }}</a>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="background-color: #f1f5f9; color: #475569; padding: 0.1rem 0.5rem; border-radius: 999px; font-weight: 600;">Project: {{ action.project }}</span>
+                        <span>• {{ action.time.strftime('%b %d, %H:%M') }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="color: var(--text-muted); font-size: 0.875rem;">No recent activity.</p>
+        {% endif %}
+    </div>
+
+    <!-- Section D: Notifications -->
+    <div class="card">
+        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; color: #1e293b;">Last 24 Hours</h3>
+        {% if notifications %}
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; position: relative;">
+            <div style="position: absolute; left: 7px; top: 8px; bottom: 8px; width: 2px; background-color: #e2e8f0; z-index: 0;"></div>
+            {% for note in notifications %}
+            <div style="display: flex; gap: 1rem; position: relative; z-index: 1;">
+                <div style="width: 16px; height: 16px; border-radius: 50%; background-color: #cbd5e1; margin-top: 2px; border: 2px solid white; flex-shrink: 0;"></div>
+                <div style="flex-grow: 1;">
+                    <div style="font-weight: 600; font-size: 0.875rem; color: #1e293b; line-height: 1.4; margin-bottom: 0.25rem;">{{ note.text }}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+                        <span>• {{ note.time.strftime('%b %d, %H:%M') }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="color: var(--text-muted); font-size: 0.875rem;">No new activity in the last 24 hours.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

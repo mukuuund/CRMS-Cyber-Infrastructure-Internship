@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlmodel
+alembic
+psycopg2-binary
+pydantic-settings
+python-dotenv
+httpx
+jinja2
+python-multipart
+itsdangerous

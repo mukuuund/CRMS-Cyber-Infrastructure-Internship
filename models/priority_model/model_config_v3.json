@@ -1,0 +1,21 @@
+{
+    "model_version": "v3_textcnn_bigru_features",
+    "max_tokens": 30000,
+    "max_sequence_length": 180,
+    "embedding_dim": 128,
+    "issue_type_embedding_dim": 16,
+    "gru_hidden_dim": 64,
+    "batch_size": 128,
+    "epochs": 10,
+    "learning_rate": 0.001,
+    "weight_mode": "sqrt",
+    "patience": 3,
+    "vocab_size": 30000,
+    "num_issue_types": 41,
+    "num_numeric_features": 19,
+    "label_map_path": "C:\\Users\\Mukun\\OneDrive\\Desktop\\Coding\\Cyber Infrastructure Internship\\models\\priority_model\\label_map_v3.json",
+    "vocab_path": "C:\\Users\\Mukun\\OneDrive\\Desktop\\Coding\\Cyber Infrastructure Internship\\models\\priority_model\\vocab_v3.json",
+    "issue_type_map_path": "C:\\Users\\Mukun\\OneDrive\\Desktop\\Coding\\Cyber Infrastructure Internship\\models\\priority_model\\issue_type_map_v3.json",
+    "scaler_path": "C:\\Users\\Mukun\\OneDrive\\Desktop\\Coding\\Cyber Infrastructure Internship\\models\\priority_model\\feature_scaler_v3.json",
+    "feature_names_path": "C:\\Users\\Mukun\\OneDrive\\Desktop\\Coding\\Cyber Infrastructure Internship\\models\\priority_model\\feature_names_v3.json"
+}

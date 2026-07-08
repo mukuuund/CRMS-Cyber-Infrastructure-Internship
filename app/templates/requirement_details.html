@@ -1,0 +1,323 @@
+{% extends "base.html" %}
+
+{% block title %}Requirement Details - CRMS{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <p><a href="/ui/projects/{{ project.id }}"
+            style="text-decoration: none; color: var(--text-muted); font-size: 0.875rem;">← Back to {{
+            project.project_code }}</a></p>
+    <h2 style="margin-top: 1rem; color: #1e293b; font-size: 1.75rem; font-weight: 700;">{{ requirement.title }}</h2>
+    <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 1rem;">{{ requirement.description or "No
+        description" }}</p>
+
+    <div style="display: flex; gap: 0.5rem; align-items: center;">
+        {% set prio = requirement.priority.value if requirement.priority and requirement.priority.value is defined else
+        requirement.priority %}
+        <span class="badge badge-priority-{{ prio | lower }}">{{ prio | title }} Priority</span>
+
+        <span class="badge badge-status-{{ requirement.status.value }}">{{ requirement.status.value | replace('_', ' ')
+            | title }}</span>
+
+        {% if requirement.module %}<span class="badge badge-role-admin">{{ requirement.module }} Module</span>{% endif
+        %}
+    </div>
+</div>
+
+{% if not is_project_editable %}
+<div class="card"
+    style="border-left: 4px solid var(--danger-color); background: rgba(255, 0, 0, 0.05); margin-bottom: 2rem;">
+    <strong>This project is closed or completed.</strong> New changes and requirements are disabled.
+</div>
+{% endif %}
+
+<div class="grid" style="grid-template-columns: 2fr 1fr; align-items: start; gap: 1.5rem;">
+
+    <!-- Left Column -->
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+
+        <!-- Details Card -->
+        <div class="card">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #1e293b;">Details</h3>
+
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.875rem; color: #334155;">
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg style="width: 16px; height: 16px; color: #64748b;" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                        </svg>
+                        <strong>Complexity:</strong> {{ requirement.complexity or "N/A" }}
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg style="width: 16px; height: 16px; color: #64748b;" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        <strong>Business Value:</strong> {{ requirement.business_value or "N/A" }}
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg style="width: 16px; height: 16px; color: #64748b;" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <strong>Estimated Effort (Days):</strong> {{ requirement.estimated_effort_days or "N/A" }}
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg style="width: 16px; height: 16px; color: #64748b;" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <strong>Created:</strong> {{ requirement.created_at.strftime('%Y-%m-%d %H:%M') }}
+                    </div>
+                </div>
+            </div>
+
+            {% if requirement.reviewed_by_id %}
+            <h4 style="margin-top: 1.5rem; margin-bottom: 0.75rem; font-size: 1rem; font-weight: 700; color: #1e293b;">
+                Review Information</h4>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.875rem; color: #334155;">
+                <div><strong>Reviewed By:</strong> User ID {{ requirement.reviewed_by_id }}</div>
+                <div><strong>Reviewed At:</strong> {{ requirement.reviewed_at.strftime('%Y-%m-%d %H:%M') if
+                    requirement.reviewed_at else "N/A" }}</div>
+            </div>
+            {% if requirement.status.value == 'rejected' and requirement.rejection_reason %}
+            <div style="margin-top: 0.75rem; font-size: 0.875rem;"><strong style="color: var(--danger-color);">Rejection
+                    Reason:</strong> {{ requirement.rejection_reason }}</div>
+            {% elif requirement.status.value == 'changes_requested' and requirement.rejection_reason %}
+            <div style="margin-top: 0.75rem; font-size: 0.875rem;"><strong style="color: #b45309;">Changes
+                    Requested:</strong> {{ requirement.rejection_reason }}</div>
+            {% endif %}
+            {% endif %}
+        </div>
+
+        <!-- AI Priority Insight Card -->
+        {% if requirement.ai_suggested_priority %}
+        <div class="card"
+            style="background-color: #ecfdf5; border: 1px solid #a7f3d0; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #065f46;">AI Priority Insight
+            </h3>
+
+            <div class="grid"
+                style="grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.875rem; color: #064e3b; margin-bottom: 1rem;">
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div><strong>AI Suggested Priority:</strong> {{ requirement.ai_suggested_priority | upper }}</div>
+                    <div><strong>AI Confidence:</strong> {% if requirement.ai_confidence %}{{ (requirement.ai_confidence
+                        * 100)|round(1) }}%{% else %}N/A{% endif %}</div>
+                    <div>
+                        <strong>Probabilities:</strong>
+                        LOW: {% if requirement.ai_low_probability %}{{ (requirement.ai_low_probability * 100)|round(1)
+                        }}%{% else %}0%{% endif %} |
+                        MEDIUM: {% if requirement.ai_medium_probability %}{{ (requirement.ai_medium_probability *
+                        100)|round(1) }}%{% else %}0%{% endif %} |
+                        HIGH: {% if requirement.ai_high_probability %}{{ (requirement.ai_high_probability *
+                        100)|round(1) }}%{% else %}0%{% endif %}
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div><strong>Model Used:</strong> V3 TextCNN + BiGRU</div>
+                    <div><strong>Human Final Priority:</strong> {{ requirement.priority.value | title if
+                        requirement.priority and requirement.priority.value is defined else requirement.priority |
+                        string | title }}</div>
+                    <div><strong>Overridden:</strong> {% if requirement.priority_overridden %}<span style="color: #b91c1c; font-weight: bold;">Yes</span>{% else %}<span>No</span>{% endif %}</div>
+                </div>
+            </div>
+
+            <div
+                style="color: #065f46; background-color: #d1fae5; padding: 0.5rem 0.75rem; border: 1px solid #a7f3d0; border-radius: 4px; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px;" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span><strong>Warning:</strong> AI suggestion only. Final priority should be confirmed by PM/BA.</span>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if requirement.suggested_effort_recommended_days %}
+        <div class="card" style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #334155;">Effort Estimate</h3>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.875rem; color: #334155;">
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div><strong>Suggested Range:</strong> {{ requirement.suggested_effort_min_days }} - {{
+                        requirement.suggested_effort_max_days }} days</div>
+                    <div><strong>Recommended Estimate:</strong> {{ requirement.suggested_effort_recommended_days }} days
+                    </div>
+                    <div><strong>Reason:</strong> {{ requirement.suggested_effort_reason }}</div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div><strong>Human Final Estimate:</strong> {{ requirement.estimated_effort_days or "N/A" }}</div>
+                    <div><strong>Effort Overridden:</strong> {% if requirement.effort_overridden %}<span style="color: var(--danger-color); font-weight: bold;">Yes</span>{% else %}<span>No</span>{% endif %}</div>
+                </div>
+            </div>
+            <div
+                style="margin-top: 1rem; color: #856404; background-color: #fef3c7; padding: 0.5rem 0.75rem; border: 1px solid #fde68a; border-radius: 4px; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px;" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span><strong>Warning:</strong> Rule-based estimate only. Final effort should be confirmed by
+                    PM/Developer.</span>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Activity Log Card -->
+        <div class="card">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; color: #1e293b;">Activity Log</h3>
+            {% if activity_logs %}
+            <div style="display: flex; flex-direction: column; gap: 1.5rem; position: relative;">
+                <!-- Vertical line -->
+                <div
+                    style="position: absolute; left: 7px; top: 8px; bottom: 8px; width: 2px; background-color: #e2e8f0; z-index: 0;">
+                </div>
+
+                {% for log, u in activity_logs %}
+                <div style="display: flex; gap: 1rem; position: relative; z-index: 1;">
+                    <div
+                        style="width: 16px; height: 16px; border-radius: 50%; background-color: #cbd5e1; margin-top: 2px; border: 2px solid white; flex-shrink: 0;">
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <div
+                            style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                            {% if u %}
+                                        <span class="badge badge-role-{{ u.role.value | lower }}" style="padding: 0.1rem 0.5rem;">{{ u.role.value | replace('_', ' ') | title }}</span>
+                                    {% else %}
+                                        <span class="badge badge-role-system" style="padding: 0.1rem 0.5rem;">System</span>
+                                    {% endif %}
+                            <span>• {{ log.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                        </div>
+                        <div style="font-size: 0.875rem; color: #1e293b; line-height: 1.4;">
+                            <strong>{{ log.action }}:</strong> {{ log.message }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p style="font-size: 0.875rem; color: var(--text-muted);">No activity recorded yet.</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- Right Column -->
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+
+        <!-- Review Action (only visible if pending review) -->
+        {% if is_project_editable and can_approve and requirement.status.value == 'submitted' %}
+        <div class="card" style="border: 1px solid #bfdbfe; background-color: #eff6ff;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #1e40af;">Review Requirement
+            </h3>
+            <form action="/ui/requirements/{{ requirement.id }}/review" method="post"
+                style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <input type="text" name="rejection_reason" placeholder="Reason (if rejecting or requesting changes)"
+                        style="font-size: 0.875rem; padding: 0.5rem; border-radius: 4px; border: 1px solid #93c5fd; width: 100%; box-sizing: border-box;" />
+                </div>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button type="submit" name="action" value="approved" class="btn"
+                        style="background-color: #10b981; color: white; flex-grow: 1;">Approve</button>
+                    <button type="submit" name="action" value="changes_requested" class="btn"
+                        style="background-color: #f59e0b; color: white; flex-grow: 1;">Request Changes</button>
+                    <button type="submit" name="action" value="rejected" class="btn"
+                        style="background-color: #ef4444; color: white; flex-grow: 1;">Reject</button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Update Metadata Card -->
+        {% if is_project_editable and can_approve %}
+        <div class="card">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #1e293b;">Update Metadata</h3>
+            <form action="/ui/requirements/{{ requirement.id }}/metadata" method="post"
+                style="display: flex; flex-direction: column; gap: 1rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label
+                        style="font-weight: 600; font-size: 0.875rem; color: #334155; margin-bottom: 0.25rem; display: block;">Complexity</label>
+                    <select name="complexity"
+                        style="padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color); width: 100%; box-sizing: border-box; background-color: white;">
+                        <option value="">Select...</option>
+                        <option value="low" {% if requirement.complexity=='low' %}selected{% endif %}>Low</option>
+                        <option value="medium" {% if requirement.complexity=='medium' %}selected{% endif %}>Medium
+                        </option>
+                        <option value="high" {% if requirement.complexity=='high' %}selected{% endif %}>High</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label
+                        style="font-weight: 600; font-size: 0.875rem; color: #334155; margin-bottom: 0.25rem; display: block;">Business
+                        Value</label>
+                    <select name="business_value"
+                        style="padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color); width: 100%; box-sizing: border-box; background-color: white;">
+                        <option value="">Select...</option>
+                        <option value="low" {% if requirement.business_value=='low' %}selected{% endif %}>Low</option>
+                        <option value="medium" {% if requirement.business_value=='medium' %}selected{% endif %}>Medium
+                        </option>
+                        <option value="high" {% if requirement.business_value=='high' %}selected{% endif %}>High
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label
+                        style="font-weight: 600; font-size: 0.875rem; color: #334155; margin-bottom: 0.25rem; display: block;">Est.
+                        Effort (Days)</label>
+                    <input type="number" step="0.5" name="estimated_effort_days"
+                        value="{{ requirement.estimated_effort_days or '' }}"
+                        style="padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color); width: 100%; box-sizing: border-box;">
+                </div>
+                <button type="submit" class="btn"
+                    style="background-color: #4d7c0f; color: white; width: 100%; padding: 0.5rem; border-radius: 6px;">Update
+                    Metadata</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Comments Card -->
+        <div class="card">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #1e293b;">Comments</h3>
+            {% if comments %}
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                {% for comment, u in comments %}
+                <div>
+                    <div
+                        style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                        <span class="badge badge-role-{{ u.role.value | lower }}" style="padding: 0.1rem 0.5rem;">{{ u.role.value | replace('_', ' ') | title }}</span>
+                        <span>• {{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                    </div>
+                    <p style="font-size: 0.875rem; color: #1e293b; margin: 0;">{{ comment.content }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p style="font-size: 0.875rem; color: var(--text-muted);">No comments yet.</p>
+            {% endif %}
+
+            <hr style="border: none; border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
+
+            <form action="/ui/requirements/{{ requirement.id }}/comments" method="post">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label
+                        style="font-weight: 700; font-size: 0.95rem; color: #1e293b; display: block; margin-bottom: 0.5rem;">Add
+                        a Comment</label>
+                    <textarea name="content" rows="3" required placeholder="Write your comment here..."
+                        style="padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color); width: 100%; box-sizing: border-box; resize: vertical;"></textarea>
+                </div>
+                <button type="submit" class="btn"
+                    style="background-color: #4d7c0f; color: white; width: 100%; padding: 0.5rem; border-radius: 6px;">Post
+                    Comment</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{
+    "model_version": "v2_textcnn_issuetype",
+    "max_tokens": 30000,
+    "max_sequence_length": 150,
+    "embedding_dim": 128,
+    "issue_type_embedding_dim": 16,
+    "batch_size": 128,
+    "epochs": 10,
+    "learning_rate": 0.001,
+    "weight_mode": "sqrt",
+    "vocab_size": 30000,
+    "num_issue_types": 41,
+    "label_map_path": "C:\\Users\\Mukun\\OneDrive\\Desktop\\Coding\\Cyber Infrastructure Internship\\models\\priority_model\\label_map_v2.json",
+    "vocab_path": "C:\\Users\\Mukun\\OneDrive\\Desktop\\Coding\\Cyber Infrastructure Internship\\models\\priority_model\\vocab_v2.json",
+    "issue_type_map_path": "C:\\Users\\Mukun\\OneDrive\\Desktop\\Coding\\Cyber Infrastructure Internship\\models\\priority_model\\issue_type_map_v2.json"
+}
