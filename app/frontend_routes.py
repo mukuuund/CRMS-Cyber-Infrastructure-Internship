@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Depends, Form, Cookie, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session, select, col
-from typing import Optional
+from typing import Optional, Any
 from datetime import date, datetime, timedelta, timezone
 
 from app.core.database import get_session
@@ -16,10 +16,10 @@ from app.api.schemas import ProjectCreate, ParticipantAdd, RequirementCreate, Ch
 router = APIRouter(prefix="/ui", include_in_schema=False)
 templates = Jinja2Templates(directory="app/templates")
 
-def get_val(x):
+def get_val(x: Any) -> Any:
     return x.value if hasattr(x, "value") else x
 
-templates.env.globals["get_val"] = get_val
+templates.env.globals["get_val"] = get_val  # type: ignore
 
 from app.core.security import NotAuthenticated
 from app.core.permissions import is_admin, is_project_participant, can_manage_project, can_create_project, can_change_global_roles, can_approve_requirement, can_close_project, can_approve_change_request
