@@ -17,6 +17,9 @@ config = context.config
 database_url = os.environ.get("DATABASE_URL")
 if not database_url:
     raise ValueError("DATABASE_URL is not set in the environment.")
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
 # configparser uses % for interpolation. We must escape it as %% if it exists in the URL.
 database_url_escaped = database_url.replace("%", "%%")
 config.set_main_option("sqlalchemy.url", database_url_escaped)

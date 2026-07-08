@@ -9,3 +9,6 @@ httpx
 jinja2
 python-multipart
 itsdangerous
+torch
+numpy
+scikit-learn

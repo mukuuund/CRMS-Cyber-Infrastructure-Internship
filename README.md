@@ -136,6 +136,25 @@ alembic revision --autogenerate -m "Description of changes"
 alembic upgrade head
 ```
 
+## Render Deployment (Production)
+
+This project is configured and ready to be deployed on Render as a FastAPI Web Service.
+
+1. **Environment Variables required:**
+   - `DATABASE_URL`: Ensure you set this to your Render PostgreSQL Internal/External URL.
+
+2. **Build Command:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Start Command:**
+   ```bash
+   alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+   ```
+
+*(SQLite should only be used for local development. For production, PostgreSQL must be used via the DATABASE_URL environment variable.)*
+
 ## Use Case
 
 This prototype is best suited for IT consultancies, freelance agencies, or internal software departments that suffer from disorganized requirement tracking. By enforcing a strict change request protocol, CRMS ensures that developers only work on approved features and that clients are always aware of scope changes.
