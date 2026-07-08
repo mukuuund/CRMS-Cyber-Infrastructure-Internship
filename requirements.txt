@@ -11,4 +11,3 @@ python-multipart
 itsdangerous
 torch
 numpy
-scikit-learn

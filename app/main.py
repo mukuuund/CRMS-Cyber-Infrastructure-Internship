@@ -40,7 +40,11 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 @app.get("/")
 def read_root():
-    return {"status": "ok", "message": "Change Request Tracker API running"}
+    return RedirectResponse(url="/ui/dashboard", status_code=303)
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "message": "CRMS API running"}
 
 @app.get("/db-health")
 def db_health(session: Session = Depends(get_session)):
