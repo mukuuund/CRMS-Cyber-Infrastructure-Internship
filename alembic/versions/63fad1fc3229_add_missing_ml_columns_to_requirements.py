@@ -17,11 +17,11 @@ down_revision: Union[str, None] = 'f6ad57c37b94'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-from sqlalchemy.engine.reflection import Inspector
+from sqlalchemy import inspect
 
 def upgrade() -> None:
     conn = op.get_bind()
-    inspector = Inspector.from_engine(conn)
+    inspector = inspect(conn)
     columns = [col['name'] for col in inspector.get_columns('requirements')]
     
     if 'ai_low_probability' not in columns:
